@@ -2,6 +2,8 @@
 
 A web-based chatbot providing evidence-based health information from verified public datasets (CDC, Mayo Clinic, MedlinePlus, NHS) using retrieval-augmented generation (RAG) and a pre-trained LLM (Gemini / OpenAI). Built for SFSU CSC 698 – Generative AI Capstone.
 
+---
+
 ## 🧩 5-Week Split: 10/29 – 12/10 (Condensed Plan)
 
 | **Week** | **Milestone** | **Zoë — PM / Docs / Flex** | **Jason — Backend / AI** | **Hana — Frontend / QA** |
@@ -141,4 +143,3 @@ Build minimal chat interface and connect to backend mock endpoint; polish basic 
 - ✅ Sources and disclaimer appear correctly in UI.  
 - ✅ `.gitignore`, `.env.example`, `.nvmrc`, and internal README complete.  
 - ✅ All team branches merged into `develop`; app stable for Week 2 LLM integration.
-
