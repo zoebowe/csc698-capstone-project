@@ -122,8 +122,8 @@ async function sendMessage() {
 | **Date** | **Focus / Milestone** | **Primary Owner(s)** | **Tasks / Deliverables** |
 |-----------|----------------------|----------------------|---------------------------|
 | **Thu Nov 6** | **Repo & Project Setup** | **Zoe (PM)** | • Create GitHub repo (`ai-medical-chatbot`) + branches (`main`, `develop`)<br>• Push initial scaffold (`/server.js`, `/public`, `.gitignore`, `SETUP.md`)<br>• Add setup + API contract to SETUP<br>• Share repo invite & setup guide with team |
-| **Fri Nov 7 – Sat Nov 8** | **Backend Initialization** | **Jason (Backend)** | • Initialize Node/Express project (`npm init -y`, install `express nodemon dotenv`)<br>• Create and test basic Express server (`app.listen`)<br>• Implement `/ask` route returning mock JSON response<br>• Add `express.json()` middleware + logging<br>• Commit & push working backend **(Zoe will merge to main to be pulled)** <br>• Verifies server runs locally |
-| **Sun Nov 9 – Mon Nov 10** | **Frontend Scaffold** | **Hana (Frontend)** | • Create `index.html`, `script.js`, `style.css`<br>• Build chat window, input box, send button<br>• Connect to `/ask` endpoint using `fetch()`<br>• Render mock answer in chat bubbles<br>• Add minimal CSS styling<br>• Commit & push working UI **(Zoe will merge to main to be pulled)**|
+| **Fri Nov 7 – Sat Nov 8** | **Backend Initialization** | **Jason (Backend)** | • Initialize Node/Express project (`npm init -y`, install `express nodemon dotenv`)<br>• Create and test basic Express server (`app.listen`)<br>• Implement `/ask` route returning mock JSON response<br>• Add `express.json()` middleware + logging<br>• Commit & push working backend **(Zoe will merge to develop to be pulled by Hana)** <br>• Verifies server runs locally |
+| **Sun Nov 9 – Mon Nov 10** | **Frontend Scaffold** | **Hana (Frontend)** | • Create `index.html`, `script.js`, `style.css`<br>• Build chat window, input box, send button<br>• Connect to `/ask` endpoint using `fetch()`<br>• Render mock answer in chat bubbles<br>• Add minimal CSS styling<br>• Commit & push working UI **(Zoe will merge to develop, then to main)**|
 | **Tue Nov 11** | **Integration + QA + Docs Polish** | **Zoe** | • Connect frontend ↔ backend and test end-to-end flow<br>• Fix CORS/fetch/JSON issues<br>• Verify output shape (`answer`, `sources`, `disclaimer`)<br>• Write About / Privacy / Disclaimer copy<br>• Finalize SETUP with setup & usage steps<br>• Tag `v0.1` (Mocked Chat) release on GitHub |
 
 ---
@@ -156,6 +156,6 @@ async function sendMessage() {
 | **When** | **Owner** | **Action** |
 |-----------|------------|-------------|
 | After scaffolding | Zoe | Push repo + branches; notify Jason & Hana |
-| After backend mock ready | Jason → Zoe merges to main → Hana | Share running server URL & example `/ask` test |
-| During integration | Hana → Zoe merges to main | Confirm `fetch('/ask')` works; push working UI |
+| After backend mock ready | Jason → Zoe merges to develop → Hana | Share running server URL & example `/ask` test |
+| During integration | Hana → Zoe merges to develop, then to main | Confirm `fetch('/ask')` works; push working UI |
 | Final QA | Zoe | Verify local loop works; update README + add disclaimer text |
