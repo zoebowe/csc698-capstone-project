@@ -1,3 +1,7 @@
+# 🚀 Setup Guide
+See **[Setup Guide → docs/SETUP.md](./docs/SETUP.md)** for installation, run commands, and testing instructions.
+
+
 # 🗓️ 5-Week Project Split: CSC 698 — AI Medical Support Chatbot
 
 | **Week** | **Focus / Milestone** | **Zoe — PM / Docs / Flex** | **Jason — Backend / AI** | **Hana — Frontend / QA** |
@@ -111,6 +115,7 @@ async function sendMessage() {
 - [ ] Create minimal CSS for chat bubbles (user vs. bot).
 - [ ] Test full round-trip: typing → fetch → render mock response.
 - [ ] Record screenshot or short clip of working mock chat (for later documentation).
+
 
 # ⏰ Timeline (Thu Nov 6 - Tue Nov 11)
 
