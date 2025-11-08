@@ -9,6 +9,7 @@ pnpm-lock.yaml
 dist/
 build/
 coverage/
+node_modules/
 
 # Env files (never commit secrets)
 .env
@@ -26,3 +27,4 @@ Thumbs.db
 logs/
 *.log
 *.log.*
+
