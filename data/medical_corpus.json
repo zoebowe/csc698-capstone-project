@@ -1,0 +1,305 @@
+[
+    {
+      "id": "cdc_flu_overview",
+      "source": "CDC",
+      "title": "Flu: Symptoms and When to Seek Care",
+      "url": "https://www.cdc.gov/flu/symptoms/",
+      "text": "Influenza commonly causes sudden fever, chills, body aches, cough, sore throat, and marked fatigue. Most healthy adults recover at home, but urgent care is needed for difficulty breathing, chest pain, severe weakness, confusion, or signs of dehydration."
+    },
+    {
+      "id": "cdc_cold_vs_flu",
+      "source": "CDC",
+      "title": "Cold vs Flu Differences",
+      "url": "https://www.cdc.gov/flu/about/",
+      "text": "Colds usually begin gradually with mild congestion and throat irritation. Flu symptoms appear abruptly and feel more intense, often with high fever and exhaustion. Concerning signs include chest discomfort, trouble breathing, or symptoms that worsen quickly."
+    },
+    {
+      "id": "cdc_covid_basic",
+      "source": "CDC",
+      "title": "COVID-19: Common Symptoms",
+      "url": "https://www.cdc.gov/covid/symptoms/",
+      "text": "COVID-19 may cause fever, cough, fatigue, sore throat, congestion, or changes in taste or smell. Many recover at home, but emergency care is required for trouble breathing, chest pain, confusion, or bluish lips or skin."
+    },
+    {
+      "id": "cdc_rsv_overview",
+      "source": "CDC",
+      "title": "RSV Basics",
+      "url": "https://www.cdc.gov/rsv/",
+      "text": "RSV causes cold-like symptoms such as congestion, cough, or low-grade fever. Infants and older adults are at greater risk for worsening breathing difficulty, dehydration, or rapid breathing that requires medical attention."
+    },
+  
+    {
+      "id": "medlineplus_fever_adults",
+      "source": "MedlinePlus",
+      "title": "Adult Fever Guidance",
+      "url": "https://medlineplus.gov/fever.html",
+      "text": "Fever often signals infection. Adults should seek medical assessment for temperatures above 103°F (39.4°C), fever lasting more than three days, or symptoms such as confusion, trouble breathing, chest pain, stiff neck, or persistent vomiting."
+    },
+    {
+      "id": "medlineplus_fever_children",
+      "source": "MedlinePlus",
+      "title": "Child Fever Guidance",
+      "url": "https://medlineplus.gov/ency/article/003090.htm",
+      "text": "Young children frequently develop fever with infections. Immediate care is needed for infants under three months or any child with difficulty waking, trouble breathing, stiff neck, seizure, purple rash, or who appears severely ill."
+    },
+  
+    {
+      "id": "nhs_sore_throat_basic",
+      "source": "NHS",
+      "title": "Sore Throat Overview",
+      "url": "https://www.nhs.uk/conditions/sore-throat/",
+      "text": "Most sore throats are viral and resolve in a few days. Warning signs include severe pain, persistent fever, difficulty swallowing, drooling, neck stiffness, or breathing trouble."
+    },
+    {
+      "id": "cdc_strep_throat",
+      "source": "CDC",
+      "title": "Strep Throat Basics",
+      "url": "https://www.cdc.gov/group-a-strep/diseases-public/strep-throat.html",
+      "text": "Strep throat causes sudden severe pain, fever, and swollen tonsils without a cough. Testing is required to confirm. Seek urgent care for trouble swallowing, drooling, or rapidly worsening symptoms."
+    },
+  
+    {
+      "id": "nhs_ear_infection",
+      "source": "NHS",
+      "title": "Ear Infection Signs",
+      "url": "https://www.nhs.uk/conditions/ear-infections/",
+      "text": "Ear infections may cause pain, reduced hearing, irritability, or fever. Seek urgent help for swelling behind the ear, high fever, severe pain, stiff neck, or ear discharge."
+    },
+    {
+      "id": "nhs_sinus_infection",
+      "source": "NHS",
+      "title": "Sinus Infection Overview",
+      "url": "https://www.nhs.uk/conditions/sinusitis/",
+      "text": "Sinusitis may cause facial pressure, nasal congestion, thick discharge, or headache. Urgent symptoms include vision changes, facial swelling, severe pain, or symptoms lasting over ten days."
+    },
+
+    {
+      "id": "mayoclinic_shortness_of_breath",
+      "source": "Mayo Clinic",
+      "title": "Shortness of Breath",
+      "url": "https://www.mayoclinic.org/symptoms/shortness-of-breath/",
+      "text": "Breathlessness can result from asthma, infection, anxiety, or heart or lung conditions. Severe shortness of breath, bluish lips, chest pain, or inability to speak in full sentences requires immediate care."
+    },
+    {
+      "id": "mayoclinic_cough",
+      "source": "Mayo Clinic",
+      "title": "Cough Overview",
+      "url": "https://www.mayoclinic.org/symptoms/cough/",
+      "text": "A cough often stems from viral illness or allergies. Seek evaluation for cough lasting over three weeks, coughing blood, high fever, weight loss, or severe shortness of breath."
+    },
+  
+    {
+      "id": "mayoclinic_chest_pain",
+      "source": "Mayo Clinic",
+      "title": "Chest Pain Causes",
+      "url": "https://www.mayoclinic.org/symptoms/chest-pain/",
+      "text": "Chest pain may result from heart conditions, lung issues, heartburn, or muscle strain. Emergency signs include crushing discomfort, sweating, nausea, radiation of pain to jaw or arm, or shortness of breath."
+    },
+    {
+      "id": "nhs_palpitations",
+      "source": "NHS",
+      "title": "Heart Palpitations",
+      "url": "https://www.nhs.uk/conditions/heart-palpitations/",
+      "text": "Palpitations feel like fluttering or pounding. Seek urgent help for palpitations with chest pain, fainting, severe breathlessness, or in people with heart disease."
+    },
+
+    {
+      "id": "nhs_abdominal_pain",
+      "source": "NHS",
+      "title": "Abdominal Pain",
+      "url": "https://www.nhs.uk/conditions/stomach-ache/",
+      "text": "Stomach pain has many causes. Severe or worsening pain, fever, persistent vomiting, blood in stool or vomit, or a rigid abdomen are emergency warning signs."
+    },
+    {
+      "id": "nhs_nausea_vomiting",
+      "source": "NHS",
+      "title": "Nausea and Vomiting",
+      "url": "https://www.nhs.uk/conditions/nausea-and-vomiting/",
+      "text": "Nausea commonly results from infection, migraine, or stomach irritation. Seek medical help for dehydration, blood in vomit, severe abdominal pain, or symptoms lasting more than two days."
+    },
+    {
+      "id": "nhs_diarrhea",
+      "source": "NHS",
+      "title": "Diarrhea Overview",
+      "url": "https://www.nhs.uk/conditions/diarrhoea-and-vomiting/",
+      "text": "Diarrhea is often related to infection or food intolerance. Warning signs include dehydration, black or bloody stool, high fever, or symptoms that persist beyond two days."
+    },
+    {
+      "id": "nhs_constipation",
+      "source": "NHS",
+      "title": "Constipation",
+      "url": "https://www.nhs.uk/conditions/constipation/",
+      "text": "Constipation may result from diet, dehydration, or inactivity. Seek evaluation for severe abdominal pain, vomiting, blood in stools, or symptoms lasting over two weeks."
+    },
+    {
+      "id": "cdc_food_poisoning",
+      "source": "CDC",
+      "title": "Foodborne Illness",
+      "url": "https://www.cdc.gov/foodsafety/",
+      "text": "Food poisoning often leads to sudden stomach cramps, nausea, vomiting, or diarrhea. Emergency symptoms include dehydration, bloody stool, high fever, or inability to keep fluids down."
+    },
+
+    {
+      "id": "nhs_uti_symptoms",
+      "source": "NHS",
+      "title": "UTI Symptoms",
+      "url": "https://www.nhs.uk/conditions/urinary-tract-infections-utis/",
+      "text": "UTIs may cause burning urination, frequent urges, or pelvic discomfort. Seek urgent help for fever, back pain, vomiting, or symptoms during pregnancy."
+    },
+    {
+      "id": "nhs_menstrual_pain",
+      "source": "NHS",
+      "title": "Menstrual Pain",
+      "url": "https://www.nhs.uk/conditions/period-pain/",
+      "text": "Menstrual cramps are common and often respond to heat and gentle activity. Severe pain, heavy bleeding, fever, or symptoms disrupting daily life need medical review."
+    },
+
+    {
+      "id": "nhs_skin_rash",
+      "source": "NHS",
+      "title": "Skin Rash",
+      "url": "https://www.nhs.uk/conditions/rash/",
+      "text": "Rashes can arise from irritation, infection, or allergy. Seek urgent help for rash with fever, trouble breathing, swelling of lips or face, or rapidly expanding redness."
+    },
+    {
+      "id": "nhs_hives",
+      "source": "NHS",
+      "title": "Hives",
+      "url": "https://www.nhs.uk/conditions/hives-urticaria/",
+      "text": "Hives are raised, itchy welts often linked to allergy. Emergency symptoms include breathing difficulty, throat swelling, dizziness, or rapidly spreading hives."
+    },
+    {
+      "id": "nhs_minor_burns",
+      "source": "NHS",
+      "title": "Minor Burn Care",
+      "url": "https://www.nhs.uk/conditions/burns-and-scalds/",
+      "text": "Minor burns cause redness and pain. Cool under running water, avoid ice, and cover with a sterile dressing. Large burns or burns on the face, hands, or genitals require immediate care."
+    },
+
+    {
+      "id": "nhs_headache",
+      "source": "NHS",
+      "title": "Headache",
+      "url": "https://www.nhs.uk/conditions/headaches/",
+      "text": "Common headaches stem from tension, dehydration, or illness. Emergency red flags include sudden severe pain, fever with neck stiffness, confusion, weakness, or trouble speaking."
+    },
+    {
+      "id": "mayoclinic_migraine",
+      "source": "Mayo Clinic",
+      "title": "Migraine",
+      "url": "https://www.mayoclinic.org/diseases-conditions/migraine/",
+      "text": "Migraines cause throbbing pain, nausea, and sensitivity to light or sound. Seek urgent care for worst-ever headache, weakness, difficulty speaking, or sudden vision problems."
+    },
+    {
+      "id": "nhs_dizziness",
+      "source": "NHS",
+      "title": "Dizziness",
+      "url": "https://www.nhs.uk/conditions/dizziness/",
+      "text": "Dizziness can result from dehydration, infection, low blood pressure, or anxiety. Concerning signs include fainting, chest pain, weakness, or symptoms that come on suddenly."
+    },
+
+    {
+      "id": "nhs_anxiety_overview",
+      "source": "NHS",
+      "title": "Anxiety",
+      "url": "https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder/",
+      "text": "Anxiety may cause chest tightness, racing thoughts, restlessness, and difficulty concentrating. Urgent help is needed for suicidal thoughts or inability to function."
+    },
+    {
+      "id": "nhs_depression_overview",
+      "source": "NHS",
+      "title": "Depression Overview",
+      "url": "https://www.nhs.uk/mental-health/conditions/clinical-depression/",
+      "text": "Depression may involve persistent sadness, low energy, appetite changes, or sleep difficulties. Immediate help is needed for suicidal thoughts or severe sudden worsening."
+    },
+
+    {
+      "id": "medlineplus_diabetes_type2",
+      "source": "MedlinePlus",
+      "title": "Type 2 Diabetes",
+      "url": "https://medlineplus.gov/diabetes.html",
+      "text": "Type 2 diabetes results in high blood glucose over time. Symptoms may include frequent urination, thirst, blurry vision, and fatigue. Long-term high blood sugar can affect the heart, nerves, kidneys, and eyes."
+    },
+    {
+      "id": "medlineplus_hypertension",
+      "source": "MedlinePlus",
+      "title": "High Blood Pressure",
+      "url": "https://medlineplus.gov/highbloodpressure.html",
+      "text": "Hypertension raises the risk of heart disease and stroke. Very high readings with headache, chest pain, confusion, or trouble seeing may signal a medical emergency."
+    },
+    {
+      "id": "nhs_high_cholesterol",
+      "source": "NHS",
+      "title": "High Cholesterol",
+      "url": "https://www.nhs.uk/conditions/high-cholesterol/",
+      "text": "High cholesterol has no symptoms but increases heart disease risk. Lifestyle measures such as balanced diet, activity, and clinician guidance help control levels."
+    },
+
+    {
+      "id": "nhs_back_pain",
+      "source": "NHS",
+      "title": "Back Pain",
+      "url": "https://www.nhs.uk/conditions/back-pain/",
+      "text": "Back pain is often caused by strain or poor posture. Immediate care is needed for leg numbness, bladder or bowel difficulty, fever, or pain after trauma."
+    },
+    {
+      "id": "nhs_joint_pain",
+      "source": "NHS",
+      "title": "Joint Pain",
+      "url": "https://www.nhs.uk/conditions/joint-pain/",
+      "text": "Joint discomfort may come from overuse, inflammation, or infection. Seek care for severe swelling, warmth, fever, or inability to move the joint."
+    },
+ 
+    {
+      "id": "nhs_allergy_basic",
+      "source": "NHS",
+      "title": "Allergy Symptoms",
+      "url": "https://www.nhs.uk/conditions/allergies/",
+      "text": "Allergies may cause itching, sneezing, rash, or watery eyes. Emergency symptoms such as trouble breathing, throat swelling, or dizziness require immediate attention."
+    },
+    {
+      "id": "cdc_asthma_overview",
+      "source": "CDC",
+      "title": "Asthma Overview",
+      "url": "https://www.cdc.gov/asthma/basics/",
+      "text": "Asthma can cause wheezing, chest tightness, cough, and shortness of breath. Severe attacks involve difficulty speaking, rapid breathing, or bluish lips."
+    },
+
+    {
+      "id": "nhs_dehydration",
+      "source": "NHS",
+      "title": "Dehydration",
+      "url": "https://www.nhs.uk/conditions/dehydration/",
+      "text": "Dehydration may lead to dizziness, dry mouth, headache, fatigue, and dark urine. Severe dehydration with confusion or fainting requires urgent medical attention."
+    },
+    {
+      "id": "nhs_heat_exhaustion",
+      "source": "NHS",
+      "title": "Heat Exhaustion",
+      "url": "https://www.nhs.uk/conditions/heat-exhaustion-heatstroke/",
+      "text": "Heat exhaustion involves heavy sweating, dizziness, nausea, and weakness. Move to a cooler space and hydrate. Heatstroke signs such as confusion or high body temperature require emergency care."
+    },
+    {
+      "id": "nhs_minor_cuts",
+      "source": "NHS",
+      "title": "Minor Cuts",
+      "url": "https://www.nhs.uk/conditions/minor-cuts-and-grazes/",
+      "text": "Minor cuts can be cleaned with water and covered with a bandage. Seek help if the wound is deep, bleeding does not stop, or signs of infection appear."
+    },
+ 
+    {
+      "id": "nih_sleep_insomnia",
+      "source": "NIH",
+      "title": "Insomnia Overview",
+      "url": "https://www.nhlbi.nih.gov/health/insomnia",
+      "text": "Insomnia causes trouble falling or staying asleep. Good sleep habits include regular routines, limiting late caffeine, and reducing screen time before bed."
+    },
+
+    {
+      "id": "nih_healthy_eating",
+      "source": "NIH",
+      "title": "Healthy Eating Basics",
+      "url": "https://www.nutrition.gov/topics/basic-nutrition",
+      "text": "Healthy eating emphasizes fruits, vegetables, whole grains, lean proteins, and hydration. Limiting added sugars, sodium, and processed foods supports long-term wellness."
+    }
+  ]

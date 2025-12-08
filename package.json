@@ -1,0 +1,41 @@
+{
+  "name": "csc698-capstone-project",
+  "version": "1.0.0",
+  "description": "AI Medical Support Chatbot (CSC 698) - RAG + GPT-4.1-mini",
+  "main": "server.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zoebowe/csc698-capstone-project.git"
+  },
+  "keywords": [
+    "chatbot",
+    "medical",
+    "rag",
+    "openai",
+    "gpt-4.1-mini",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zoebowe/csc698-capstone-project/issues"
+  },
+  "homepage": "https://github.com/zoebowe/csc698-capstone-project#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "openai": "^4.67.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

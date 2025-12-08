@@ -1,3 +1,77 @@
-<!-- TODO[HANA][W1]: Build the chat UI shell (message list, input, send button) and include script.js.
-     Done when: user can type a question and see bot response rendered from /ask.
-     (See SETUP.md)-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Medical Support Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <main class="app">
+      <!-- Header: Title + description -->
+      <header class="app-header">
+        <div class="header-text">
+          <h1>AI Medical Support Chatbot</h1>
+          <p class="tagline">
+            Ask general health questions in plain language. Responses are based on trusted public medical
+            information and <strong>are not a substitute</strong> for professional medical advice.
+          </p>
+        </div>
+      </header>
+
+      <!-- Chat area -->
+      <section id="chat" class="chat-container">
+        <div id="messages" class="messages">
+          <!-- Intro bot message -->
+          <div class="bubble bot">
+            <p>
+              <strong>Welcome!</strong> I'm your medical information assistant. You can ask about symptoms,
+              conditions, or general health topics, and I’ll provide clear, concise explanations based on reputable
+              sources such as the CDC, Mayo Clinic, MedlinePlus, and the NHS.
+            </p>
+            <p class="disclaimer-inline">
+              I cannot diagnose, treat, or replace a healthcare professional. Call emergency services for urgent or
+              life-threatening symptoms.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Input area (ChatGPT-style bottom bar) -->
+      <section class="input-shell">
+        <form id="chat-form" class="chat-form">
+          <label for="question" class="sr-only">Your question</label>
+
+          <div class="chat-input-row">
+            <textarea
+              id="question"
+              name="question"
+              rows="2"
+              placeholder="Ask something like: What causes chest pain? Should I worry about a fever?"
+              required
+            ></textarea>
+
+            <button type="submit" id="send-btn" aria-label="Send message">
+              Ask
+            </button>
+          </div>
+
+          <p class="input-hint">
+            Press <kbd>Enter</kbd> to send, <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line.
+          </p>
+        </form>
+      </section>
+
+      <!-- Footer disclaimer -->
+      <footer class="app-footer">
+        <p>
+          Important: This chatbot is for informational purposes only and does not provide medical diagnoses or
+          treatment.
+        </p>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
