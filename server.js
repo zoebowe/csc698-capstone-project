@@ -136,6 +136,106 @@ function retrieveRelevantPassages(question, k = 3) {
 }
 
 // ---------------------------------------------------------
+// 3b) Heuristics: is this likely a health question?
+// ---------------------------------------------------------
+
+const HEALTH_KEYWORDS = [
+  "health",
+  "healthy",
+  "illness",
+  "disease",
+  "symptom",
+  "symptoms",
+  "diagnosis",
+  "treatment",
+  "medicine",
+  "medication",
+  "drug",
+  "pill",
+  "vaccine",
+  "shot",
+  "dose",
+  "pain",
+  "ache",
+  "fever",
+  "cough",
+  "cold",
+  "flu",
+  "infection",
+  "virus",
+  "bacteria",
+  "antibiotic",
+  "rash",
+  "headache",
+  "migraine",
+  "dizzy",
+  "dizziness",
+  "nausea",
+  "vomit",
+  "vomiting",
+  "diarrhea",
+  "constipation",
+  "bleeding",
+  "blood",
+  "pressure",
+  "heart",
+  "chest",
+  "lung",
+  "breath",
+  "breathing",
+  "pregnant",
+  "pregnancy",
+  "period",
+  "menstruation",
+  "mental health",
+  "anxiety",
+  "depression",
+  "stress",
+  "therapy",
+  "doctor",
+  "nurse",
+  "hospital",
+  "clinic",
+  "urgent care",
+  "er",
+  "emergency",
+  "injury",
+  "wound",
+  "sprain",
+  "fracture",
+  "diabetes",
+  "asthma",
+  "cancer"
+];
+
+const GENERIC_FOLLOW_UP_PATTERNS = [
+  "what should i do",
+  "what do i do",
+  "what should i do next",
+  "what do i do next",
+  "what should we do",
+  "what now",
+  "what next",
+  "should i be worried",
+  "do i need to see a doctor",
+  "do i need to go to the doctor",
+  "is that bad",
+  "is this bad",
+  "is that serious",
+  "is this serious"
+];
+
+function isLikelyHealthQuestion(text) {
+  const lower = (text || "").toLowerCase();
+  return HEALTH_KEYWORDS.some((kw) => lower.includes(kw));
+}
+
+function looksLikeGenericHealthFollowUp(text) {
+  const lower = (text || "").toLowerCase();
+  return GENERIC_FOLLOW_UP_PATTERNS.some((p) => lower.includes(p));
+}
+
+// ---------------------------------------------------------
 // 4) Conversation memory (single-session, in-memory)
 // ---------------------------------------------------------
 
@@ -158,6 +258,17 @@ function buildHistoryBlock() {
         : `Assistant: ${turn.content}`
     )
     .join("\n");
+}
+
+// Helper: last *previous* user question (before the current one)
+function getPreviousUserQuestion() {
+  for (let i = conversationHistory.length - 1; i >= 0; i--) {
+    const turn = conversationHistory[i];
+    if (turn.role === "user") {
+      return turn.content || "";
+    }
+  }
+  return "";
 }
 
 // ---------------------------------------------------------
@@ -222,7 +333,7 @@ function buildSourcesFromRetrieved(retrieved, maxSources = 2) {
 }
 
 // ---------------------------------------------------------
-// 6) /ask endpoint with RAG + conversation
+// 6) /ask endpoint with RAG + conversation + robust JSON
 // ---------------------------------------------------------
 
 app.post("/ask", async (req, res) => {
@@ -234,8 +345,42 @@ app.post("/ask", async (req, res) => {
       .json({ error: "Missing 'question' field in request body." });
   }
 
+  // Previous user message BEFORE this one (for follow-up detection)
+  const previousUserQuestion = getPreviousUserQuestion();
+
+  // Save current user message into history
   addToHistory("user", question);
 
+  // Heuristic: should we treat THIS turn as health-related?
+  const directHealth = isLikelyHealthQuestion(question);
+  const genericFollowUp = looksLikeGenericHealthFollowUp(question);
+  const prevWasHealth = isLikelyHealthQuestion(previousUserQuestion);
+
+  const treatAsHealth = directHealth || (genericFollowUp && prevWasHealth);
+
+  // 6a) Short-circuit clearly non-health turns
+  if (!treatAsHealth) {
+    const answer = `
+<p>I understand your curiosity, but this chatbot is meant for general health and medical questions only.</p>
+<p>If you have questions about symptoms, wellness, medical conditions, or tests, feel free to ask and I will do my best to explain things in clear, simple language.</p>
+    `.trim();
+
+    addToHistory("assistant", answer);
+
+    return res.json({
+      answer,
+      sources: [], // no sources for non-health questions
+      disclaimer:
+        "This chatbot provides general health information and is NOT a substitute for professional medical advice, diagnosis, or treatment. " +
+        "Always talk to a licensed healthcare provider about your own health, and call emergency services in urgent situations.",
+      followUps: [
+        "Is there a symptom or health concern you would like to ask about?",
+        "Would you like some general tips on staying healthy?"
+      ]
+    });
+  }
+
+  // 6b) If not using OpenAI, fall back to generic health response
   if (!openaiClient) {
     const mock = buildMockResponse(question);
     addToHistory("assistant", mock.answer);
@@ -243,10 +388,10 @@ app.post("/ask", async (req, res) => {
   }
 
   try {
-    // 6a) Retrieve relevant passages
+    // 6c) Retrieve relevant passages
     const retrieved = retrieveRelevantPassages(question, 3);
 
-    // 6b) Summarize RAG context
+    // 6d) Summarize RAG context
     let ragSummary = "No clearly relevant documents were found in the corpus.";
     if (retrieved.length) {
       const summaryPrompt = `
@@ -275,34 +420,37 @@ ${retrieved
       ragSummary = (summaryResult.output_text || "").trim();
     }
 
-    // 6c) Main conversational prompt with NEW system instructions
+    // 6e) Main conversational prompt with JSON-only response
 
     const systemInstruction = `
 You are a calm, empathetic medical information assistant.
 
-STYLE:
-- Speak in a natural, conversational tone, like a helpful nurse educator.
-- Let the length of your response depend on the complexity of the question.
-- Simple questions should get concise answers (about one short paragraph).
-- More complex or sensitive questions may need 2–3 short paragraphs and, if helpful, a short bullet list.
-- Use bullet points only when they genuinely improve clarity.
-- Avoid unnecessary repetition or boilerplate phrasing.
+GOALS:
+- Provide clear, friendly, easy-to-understand explanations.
+- Speak in a natural, conversational tone—avoid rigid templates.
+- Use short paragraphs. Use bullet points only when they genuinely improve clarity.
+- Adapt your style to the user's question rather than forcing a fixed structure.
 
 SAFETY RULES:
 - You provide general, evidence-based health information only.
 - You are NOT a doctor and do NOT give diagnoses, medical advice, or treatment plans.
-- Never tell the user what condition they 'have' or claim that their symptoms prove a specific disease.
-- You may explain when it is reasonable to contact a clinician, urgent care, or emergency services, and why.
+- Never tell the user what condition they 'have' or that their symptoms prove a specific disease.
+- You may explain when it is reasonable to contact a clinician and why.
 - Mention emergency warning signs ONLY when they clearly apply to the question.
 - Never provide medication dosages or prescribe medication.
 - Never invent or speculate beyond established medical knowledge.
-- If information is uncertain or depends on individual factors, clearly say that you cannot know for sure and recommend talking to a clinician.
+- If information is uncertain or depends on individual factors, clearly say so.
 
-WORKFLOW:
-- Answer the user’s question in SIMPLE HTML using <p> and, when useful, <ul><li>...</li></ul>.
-- Let the answer length match the question complexity.
-- Try to stay under about 250 words unless extra detail is clearly helpful.
-- Do NOT use markdown or code fences.
+RESPONSE FORMAT (IMPORTANT):
+- You must respond with JSON ONLY. Do not include any extra text before or after the JSON.
+- The JSON must have the shape:
+  {
+    "answer": "<p>HTML answer here...</p>",
+    "follow_ups": ["question 1", "question 2"]
+  }
+- "answer" must be a single HTML string using <p> and, if useful, <ul><li>...</li></ul>.
+- "follow_ups" should be an array of 0–2 short, natural follow-up questions.
+- Do not use markdown or code fences, just raw JSON.
     `.trim();
 
     const historyBlock = buildHistoryBlock();
@@ -319,28 +467,7 @@ ${ragSummary}
 User's latest question:
 '${question}'
 
-Using ONLY the information above (do not invent new facts), do the following:
-
-1) Write a friendly, conversational answer in SIMPLE HTML:
-   - Use <p> tags for short paragraphs.
-   - You may include a <ul><li>...</li></ul> list only if it genuinely helps readability.
-   - Do NOT force fixed section headings in every answer.
-   - Mention seeking medical or urgent care only when it reasonably fits the situation.
-   - Let the length depend on how complex the question is, but try not to exceed about 250 words.
-   - Do NOT include any double quote characters (") inside the HTML; use plain text and single quotes only. Do not use HTML attributes.
-
-2) Suggest up to 2 natural follow-up questions the user might ask next. If none feel natural, return an empty list.
-
-Return your response as valid JSON with this exact shape:
-
-{
-  "answer": "<p>HTML answer here with optional <ul><li>...</li></ul></p>",
-  "follow_ups": ["short follow-up question 1", "short follow-up question 2"]
-}
-
-Remember:
-- The value of 'answer' must be a SINGLE HTML string (no markdown, no code fences).
-- Do NOT put any double quote characters inside that string, so the JSON stays valid.
+Now respond in JSON ONLY, following the required format exactly.
     `.trim();
 
     const result = await openaiClient.responses.create({
@@ -350,31 +477,60 @@ Remember:
 
     const rawText = (result.output_text || "").trim();
 
-    // 6d) Parse JSON
-    let answer = rawText;
+    // 6f) Parse JSON robustly
+    let answer;
     let followUps = [];
 
-    try {
-      const firstBrace = rawText.indexOf("{");
-      const lastBrace = rawText.lastIndexOf("}");
-      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-        const jsonSlice = rawText.slice(firstBrace, lastBrace + 1);
-        const parsed = JSON.parse(jsonSlice);
+    function useSafeFallback(reason) {
+      console.warn("Using safe fallback answer because:", reason);
 
-        if (parsed && typeof parsed.answer === "string") {
-          answer = parsed.answer;
+      answer = `
+<p>I am here to provide general medical information, but something went wrong while formatting this reply.</p>
+<p>Please try asking your health question again, or rephrase it. I can explain symptoms, conditions, tests, and general treatment options, but I cannot diagnose or give personalized medical advice.</p>
+      `.trim();
+
+      followUps = [];
+    }
+
+    try {
+      let parsed;
+
+      // First try: parse whole output
+      try {
+        parsed = JSON.parse(rawText);
+      } catch {
+        // Second try: slice between first { and last }
+        const firstBrace = rawText.indexOf("{");
+        const lastBrace = rawText.lastIndexOf("}");
+        if (firstBrace !== -1 && lastBrace > firstBrace) {
+          const jsonSlice = rawText.slice(firstBrace, lastBrace + 1);
+          parsed = JSON.parse(jsonSlice);
+        } else {
+          throw new Error("No JSON object found in model output.");
         }
+      }
+
+      if (!parsed || typeof parsed.answer !== "string") {
+        useSafeFallback("Parsed JSON missing 'answer' field.");
+      } else {
+        answer = parsed.answer.trim();
+
         if (Array.isArray(parsed.follow_ups)) {
-          followUps = parsed.follow_ups.filter(
-            (q) => typeof q === "string" && q.trim().length > 0
-          );
+          followUps = parsed.follow_ups
+            .filter((q) => typeof q === "string" && q.trim().length > 0)
+            .slice(0, 2);
+        } else {
+          followUps = [];
+        }
+
+        // If model forgot HTML tags, wrap in <p>
+        if (!answer.includes("<p")) {
+          answer = `<p>${answer}</p>`;
         }
       }
     } catch (parseErr) {
-      console.warn(
-        "Could not parse JSON from OpenAI response, using raw text.",
-        parseErr.message
-      );
+      console.warn("Could not parse JSON from OpenAI response.", parseErr.message);
+      useSafeFallback("JSON parse error.");
     }
 
     addToHistory("assistant", answer);
