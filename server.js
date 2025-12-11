@@ -39,6 +39,14 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // ---------------------------------------------------------
+// Shared disclaimer text
+// ---------------------------------------------------------
+
+const BASE_DISCLAIMER =
+  "This chatbot provides general health information and is NOT a substitute for professional medical advice, diagnosis, or treatment. " +
+  "Always talk to a licensed healthcare provider about your own health, and call emergency services in urgent situations.";
+
+// ---------------------------------------------------------
 // 2) Load & CHUNK medical corpus for retrieval (RAG)
 // ---------------------------------------------------------
 
@@ -136,7 +144,8 @@ function retrieveRelevantPassages(question, k = 3) {
 }
 
 // ---------------------------------------------------------
-// 3b) Heuristics: is this likely a health question?
+// 3b) Heuristic: is this likely a health-related question?
+//      (Used ONLY to decide when to show sources.)
 // ---------------------------------------------------------
 
 const HEALTH_KEYWORDS = [
@@ -183,6 +192,25 @@ const HEALTH_KEYWORDS = [
   "lung",
   "breath",
   "breathing",
+  "short of breath",
+  "shortness of breath",
+  "numb",
+  "numbness",
+  "tingle",
+  "tingling",
+  "weakness",
+  "swelling",
+  "swollen",
+  "sore",
+  "hurt",
+  "injury",
+  "wound",
+  "sprain",
+  "fracture",
+  "broken bone",
+  "diabetes",
+  "asthma",
+  "cancer",
   "pregnant",
   "pregnancy",
   "period",
@@ -198,31 +226,7 @@ const HEALTH_KEYWORDS = [
   "clinic",
   "urgent care",
   "er",
-  "emergency",
-  "injury",
-  "wound",
-  "sprain",
-  "fracture",
-  "diabetes",
-  "asthma",
-  "cancer"
-];
-
-const GENERIC_FOLLOW_UP_PATTERNS = [
-  "what should i do",
-  "what do i do",
-  "what should i do next",
-  "what do i do next",
-  "what should we do",
-  "what now",
-  "what next",
-  "should i be worried",
-  "do i need to see a doctor",
-  "do i need to go to the doctor",
-  "is that bad",
-  "is this bad",
-  "is that serious",
-  "is this serious"
+  "emergency"
 ];
 
 function isLikelyHealthQuestion(text) {
@@ -230,9 +234,11 @@ function isLikelyHealthQuestion(text) {
   return HEALTH_KEYWORDS.some((kw) => lower.includes(kw));
 }
 
-function looksLikeGenericHealthFollowUp(text) {
-  const lower = (text || "").toLowerCase();
-  return GENERIC_FOLLOW_UP_PATTERNS.some((p) => lower.includes(p));
+// Looks at last 2 user turns for health-related context
+function recentConversationLooksHealthRelated() {
+  const userTurns = conversationHistory.filter((t) => t.role === "user");
+  const recent = userTurns.slice(-2);
+  return recent.some((t) => isLikelyHealthQuestion(t.content));
 }
 
 // ---------------------------------------------------------
@@ -260,23 +266,13 @@ function buildHistoryBlock() {
     .join("\n");
 }
 
-// Helper: last *previous* user question (before the current one)
-function getPreviousUserQuestion() {
-  for (let i = conversationHistory.length - 1; i >= 0; i--) {
-    const turn = conversationHistory[i];
-    if (turn.role === "user") {
-      return turn.content || "";
-    }
-  }
-  return "";
-}
-
 // ---------------------------------------------------------
 // 5) Shared mock response (when OpenAI is missing or errors)
 // ---------------------------------------------------------
 
 function buildBaseSourcesFromCorpus() {
   if (!medicalCorpus || !medicalCorpus.length) {
+    // default to 3 well-known orgs if corpus is missing
     return ["CDC", "Mayo Clinic", "MedlinePlus"];
   }
 
@@ -306,9 +302,7 @@ function buildMockResponse(question, isFallback = false) {
     disclaimer:
       (isFallback
         ? "The main model is temporarily unavailable, so this answer is based on a static template and may be less accurate. "
-        : "") +
-      "This chatbot does NOT provide medical diagnoses or treatment. It is for general informational purposes only. " +
-      "Always consult a licensed healthcare professional for questions about your own health, and call emergency services in urgent situations.",
+        : "") + BASE_DISCLAIMER,
     followUps: []
   };
 }
@@ -345,42 +339,15 @@ app.post("/ask", async (req, res) => {
       .json({ error: "Missing 'question' field in request body." });
   }
 
-  // Previous user message BEFORE this one (for follow-up detection)
-  const previousUserQuestion = getPreviousUserQuestion();
-
-  // Save current user message into history
   addToHistory("user", question);
 
-  // Heuristic: should we treat THIS turn as health-related?
-  const directHealth = isLikelyHealthQuestion(question);
-  const genericFollowUp = looksLikeGenericHealthFollowUp(question);
-  const prevWasHealth = isLikelyHealthQuestion(previousUserQuestion);
+  // Heuristic: should we TREAT this message as health-related?
+  // - yes if this question looks health-related OR
+  // - recent user questions looked health-related (for follow-ups like "what should I do next?")
+  const looksHealthNow = isLikelyHealthQuestion(question);
+  const recentHealthContext = recentConversationLooksHealthRelated();
+  const treatAsHealth = looksHealthNow || recentHealthContext;
 
-  const treatAsHealth = directHealth || (genericFollowUp && prevWasHealth);
-
-  // 6a) Short-circuit clearly non-health turns
-  if (!treatAsHealth) {
-    const answer = `
-<p>I understand your curiosity, but this chatbot is meant for general health and medical questions only.</p>
-<p>If you have questions about symptoms, wellness, medical conditions, or tests, feel free to ask and I will do my best to explain things in clear, simple language.</p>
-    `.trim();
-
-    addToHistory("assistant", answer);
-
-    return res.json({
-      answer,
-      sources: [], // no sources for non-health questions
-      disclaimer:
-        "This chatbot provides general health information and is NOT a substitute for professional medical advice, diagnosis, or treatment. " +
-        "Always talk to a licensed healthcare provider about your own health, and call emergency services in urgent situations.",
-      followUps: [
-        "Is there a symptom or health concern you would like to ask about?",
-        "Would you like some general tips on staying healthy?"
-      ]
-    });
-  }
-
-  // 6b) If not using OpenAI, fall back to generic health response
   if (!openaiClient) {
     const mock = buildMockResponse(question);
     addToHistory("assistant", mock.answer);
@@ -388,10 +355,10 @@ app.post("/ask", async (req, res) => {
   }
 
   try {
-    // 6c) Retrieve relevant passages
+    // 6a) Retrieve relevant passages
     const retrieved = retrieveRelevantPassages(question, 3);
 
-    // 6d) Summarize RAG context
+    // 6b) Summarize RAG context
     let ragSummary = "No clearly relevant documents were found in the corpus.";
     if (retrieved.length) {
       const summaryPrompt = `
@@ -420,7 +387,7 @@ ${retrieved
       ragSummary = (summaryResult.output_text || "").trim();
     }
 
-    // 6e) Main conversational prompt with JSON-only response
+    // 6c) Main conversational prompt with JSON-only response
 
     const systemInstruction = `
 You are a calm, empathetic medical information assistant.
@@ -440,6 +407,8 @@ SAFETY RULES:
 - Never provide medication dosages or prescribe medication.
 - Never invent or speculate beyond established medical knowledge.
 - If information is uncertain or depends on individual factors, clearly say so.
+- If the user asks about something clearly unrelated to health (for example, 'the sky is blue'),
+  gently explain that you can only answer health-related questions.
 
 RESPONSE FORMAT (IMPORTANT):
 - You must respond with JSON ONLY. Do not include any extra text before or after the JSON.
@@ -477,7 +446,7 @@ Now respond in JSON ONLY, following the required format exactly.
 
     const rawText = (result.output_text || "").trim();
 
-    // 6f) Parse JSON robustly
+    // 6d) Parse JSON robustly
     let answer;
     let followUps = [];
 
@@ -514,7 +483,6 @@ Now respond in JSON ONLY, following the required format exactly.
         useSafeFallback("Parsed JSON missing 'answer' field.");
       } else {
         answer = parsed.answer.trim();
-
         if (Array.isArray(parsed.follow_ups)) {
           followUps = parsed.follow_ups
             .filter((q) => typeof q === "string" && q.trim().length > 0)
@@ -529,20 +497,45 @@ Now respond in JSON ONLY, following the required format exactly.
         }
       }
     } catch (parseErr) {
-      console.warn("Could not parse JSON from OpenAI response.", parseErr.message);
+      console.warn(
+        "Could not parse JSON from OpenAI response.",
+        parseErr.message
+      );
       useSafeFallback("JSON parse error.");
     }
 
     addToHistory("assistant", answer);
 
-    const sources = buildSourcesFromRetrieved(retrieved, 2);
+    // -----------------------------------------------------
+    // Decide when to show sources:
+    // - Only if we are treating this as health-related AND
+    //   RAG actually found relevant corpus chunks.
+    // - Otherwise: no sources.
+    // - If it's health-related but RAG found nothing, add
+    //   a note to the disclaimer.
+    // -----------------------------------------------------
+    const usedCorpus = treatAsHealth && retrieved.length > 0;
+
+    let sources = [];
+    let disclaimer = BASE_DISCLAIMER;
+
+    if (usedCorpus) {
+      sources = buildSourcesFromRetrieved(retrieved, 2);
+    } else if (treatAsHealth) {
+      // Health question, but corpus didn't match well
+      disclaimer =
+        "Note: I could not find a closely matching document in the reference library for this question. " +
+        "This answer is based on general medical knowledge and may be less complete.\n\n" +
+        BASE_DISCLAIMER;
+    } else {
+      // Non-health question: no sources, normal disclaimer is fine
+      sources = [];
+    }
 
     const responsePayload = {
       answer,
       sources,
-      disclaimer:
-        "This chatbot provides general health information and is NOT a substitute for professional medical advice, diagnosis, or treatment. " +
-        "Always talk to a licensed healthcare provider about your own health, and call emergency services in urgent situations.",
+      disclaimer,
       followUps
     };
 
@@ -550,7 +543,7 @@ Now respond in JSON ONLY, following the required format exactly.
       `POST /ask 200 - question='${question.slice(
         0,
         80
-      )}...' (retrieved ${retrieved.length} chunks)`
+      )}...' (retrieved ${retrieved.length} chunks, treatAsHealth=${treatAsHealth}, usedCorpus=${usedCorpus})`
     );
 
     return res.json(responsePayload);
